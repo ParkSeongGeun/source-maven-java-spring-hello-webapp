@@ -56,6 +56,8 @@ pipeline {
     stage('Build & Tag & Push Docker Image') {
       steps {
         container('kaniko') {
+          sh 'ls -la $WORKSPACE'
+          sh 'ls -la $WORKSPACE/Dockerfile || echo "Dockerfile NOT FOUND"'
           sh 'executor --context=dir://$WORKSPACE --destination=phd0801/k8s-cicd:$BUILD_NUMBER --destination=phd0801/k8s-cicd:latest'
         }
       }
