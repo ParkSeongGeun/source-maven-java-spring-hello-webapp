@@ -35,7 +35,7 @@ pipeline {
     stage('Checkout') {
       steps {
         container('maven') {
-          git branch: 'main', url: 'https://github.com/ParkSeongGeun/source-maven-java-spring-hello-webapp.git'
+          git branch: 'main', url: 'https://github.com/nobreak-labs/source-maven-java-spring-hello-webapp.git'
         }
       }
     }
