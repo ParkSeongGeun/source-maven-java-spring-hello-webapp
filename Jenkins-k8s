@@ -13,12 +13,12 @@ pipeline {
             args:
             - infinity
           - name: git
-	    image: alpine/git
-	    command:
-	    - sleep
-	    args:
-	    - infinity
-	  - name: kaniko
+            image: alpine/git
+            command:
+            - sleep
+            args:
+            - infinity
+          - name: kaniko
             image: gcr.io/kaniko-project/executor:debug
             command:
             - sleep
@@ -69,30 +69,30 @@ pipeline {
       }
     }
     stage('Update K8s Manifests & Push') {
-	environment {
-		githubUser = 'ParkSeongGeun'
-		githubEmail = 'phd0801@naver.com'
-		githubId = 'ParkSeongGeun'
-		githubRepo = 'argocd-practice'
-		githubURL = 'https://github.com/ParkSeongGeun/argocd-practice.git'
-		dockerhubId = 'phd0801'
-		dockerhubRepo = 'cicd-last'
-	}
-	steps {
-		container('git') {
-			git branch: 'main', credentialsId: 'github-credential', url: "${githubURL}"
-			sh "git config --global --add safe.directory ${workspace}"
-			sh "git config --global user.name ${githubUser}"
-			sh "git config --global user.email ${githubEmail}"
-			sh 'sed -i "s/image:.*/image: ${dockerhubId}\\/${dockerhubRepo}:${BUILD_NUMBER}/g" deployment.yaml'
-			sh 'git add deployment.yaml'
-			sh 'git commit -m "Jenkins Build Number - ${BUILD_NUMBER}"'
-			withCredentials([gitUsernamePassword(credentialsId: 'github-credential', gitToolName: 'Default')]) {
-                sh 'git push --set-upstream origin main'
-            }
+      environment {
+        githubUser = 'ParkSeongGeun'
+        githubEmail = 'phd0801@naver.com'
+        githubId = 'ParkSeongGeun'
+        githubRepo = 'argocd-practice'
+        githubURL = 'https://github.com/ParkSeongGeun/argocd-practice.git'
+        dockerhubId = 'phd0801'
+        dockerhubRepo = 'cicd-last'
+      }
+      steps {
+        container('git') {
+          git branch: 'main', credentialsId: 'github-credential', url: "${githubURL}"
+          sh "git config --global --add safe.directory ${WORKSPACE}"
+          sh "git config --global user.name ${githubUser}"
+          sh "git config --global user.email ${githubEmail}"
+          sh 'sed -i "s/image:.*/image: ${dockerhubId}\\/${dockerhubRepo}:${BUILD_NUMBER}/g" deployment.yaml'
+          sh 'git add deployment.yaml'
+          sh 'git commit -m "Jenkins Build Number - ${BUILD_NUMBER}"'
+          withCredentials([gitUsernamePassword(credentialsId: 'github-credential', gitToolName: 'Default')]) {
+            sh 'git push --set-upstream origin main'
           }
         }
       }
     }
   }
 }
+
